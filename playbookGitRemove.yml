@@ -1,0 +1,12 @@
+- hosts: all
+
+  tasks:
+    - name: remove  git
+      ansible.builtin.apt:
+        name:
+          - git
+          - git-core
+          - git-man
+        state: absent
+        autoremove: yes
+      become: yes
