@@ -1,0 +1,37 @@
+---
+- name: Обновляем систему и устанавливаем пакеты
+  hosts: all
+  become: true
+  tasks:
+    # Обновляем кэш репозиториев apt
+    - name: Update package cache
+      ansible.builtin.apt:
+        update_cache: yes
+      tags:
+        - update-cache
+
+    # Устанавливаем необходимые приложения
+    - name: Install required packages
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - make
+        - nodejs
+      tags:
+        - install-packages
+
+    # Создаем нужных пользователей
+    - name: Create users arya, sansa, tirion
+      ansible.builtin.user:
+        name: "{{ item }}"
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+      loop:
+        - arya
+        - sansa
+        - tirion
+      tags:
+        - create-users
