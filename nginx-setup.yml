@@ -4,6 +4,7 @@
   become: yes
   vars:
     nginx_port: 80
+    root_dir: /usr/share/nginx/html
   
   tasks:
     - name: Install Nginx
@@ -12,16 +13,17 @@
         state: present
       notify: restart nginx
 
-    - name: Copy HTML file
-      copy:
+    - name: Create HTML file from template
+      template:
         src: files/index.html
-        dest: /usr/share/nginx/html/index.html
+        dest: "{{ root_dir }}/index.html"
         owner: root
         group: root
         mode: '0644'
+      notify: restart nginx
 
     - name: Copy Nginx configuration file
-      copy:
+      template:  # Используем template вместо copy для nginx.conf тоже
         src: files/nginx.conf
         dest: /etc/nginx/nginx.conf
         owner: root
